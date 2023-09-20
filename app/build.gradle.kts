@@ -15,6 +15,9 @@ android {
         versionCode = 1
         versionName = "1.0"
 
+        val apiKey: String by project
+        buildConfigField("String", "API_KEY", apiKey)
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
@@ -73,10 +76,13 @@ dependencies {
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
 
     // Ktor
-    implementation("io.ktor:ktor-client-android:2.3.4")
-    implementation("io.ktor:ktor-client-serialization:2.3.4")
+    val ktorVersion = "2.3.4"
+    implementation("io.ktor:ktor-client-core:$ktorVersion")
+    implementation("io.ktor:ktor-client-android:$ktorVersion")
+    implementation("io.ktor:ktor-client-logging:$ktorVersion")
+    implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
-    implementation("io.ktor:ktor-client-logging-jvm:1.5.0")
 
     // Timber
     implementation("com.jakewharton.timber:timber:5.0.1")
