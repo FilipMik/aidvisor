@@ -1,7 +1,7 @@
 package com.filipmik.aidvisor.injection
 
 import com.filipmik.aidvisor.BuildConfig
-import com.filipmik.aidvisor.tools.Constants
+import com.filipmik.aidvisor.data.remote.AidvisorRoutes
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -11,13 +11,16 @@ import io.ktor.client.engine.android.Android
 import io.ktor.client.plugins.DefaultRequest
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.LogLevel
+import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
+import io.ktor.client.plugins.observer.ResponseObserver
 import io.ktor.client.request.bearerAuth
 import io.ktor.client.request.header
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
+import timber.log.Timber
 import javax.inject.Singleton
 
 @Module
@@ -29,15 +32,32 @@ class NetworkModule {
     fun providesHttpClient() : HttpClient {
         return HttpClient(Android) {
             install(Logging) {
+                logger = object: Logger {
+                    override fun log(message: String) {
+                        Timber.d("KTOR: $message")
+                    }
+                }
                 level = LogLevel.ALL
             }
+
             install(DefaultRequest) {
-                url(Constants.Api.BASE_URL)
+                url(AidvisorRoutes.BASE_URL)
                 header(HttpHeaders.ContentType, ContentType.Application.Json)
                 bearerAuth(BuildConfig.API_KEY)
             }
+
             install(ContentNegotiation) {
-                json(Json)
+                json(Json {
+                    isLenient = true
+                    prettyPrint = true
+                    ignoreUnknownKeys = true
+                })
+            }
+
+            install(ResponseObserver) {
+                onResponse { response ->
+                    Timber.d("HTTP status:", "${response.status.value}")
+                }
             }
         }
     }

@@ -7,13 +7,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.filipmik.aidvisor.navigation.Destination
 
 @Composable
-fun HomeScreen(navController: NavController) {
+fun HomeScreen(
+    navController: NavController,
+    viewModel: HomeViewModel = hiltViewModel()
+) {
+
+    //val response = viewModel.chatCompletionsResponse.collectAsState()
 
     Column(
         verticalArrangement = Arrangement.Center,
@@ -23,9 +29,9 @@ fun HomeScreen(navController: NavController) {
     ) {
         Text(text = "HomeScreen")
         Button(onClick = {
-            navController.navigate(Destination.Detail.route)
+
         }) {
-            Text(text = "To Detail screen")
+            Text(text = "Ask for a joke")
         }
     }
 }
