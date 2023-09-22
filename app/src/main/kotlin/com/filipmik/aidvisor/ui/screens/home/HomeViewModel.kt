@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.filipmik.aidvisor.data.model.request.ChatCompletionRequest
 import com.filipmik.aidvisor.data.model.request.Message
 import com.filipmik.aidvisor.data.model.response.ChatCompletionsResponse
-import com.filipmik.aidvisor.data.repository.AidvisorServiceImpl
+import com.filipmik.aidvisor.data.repository.AidvisorRepository
 import com.filipmik.aidvisor.tools.ApiResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val aidvisorServiceImpl: AidvisorServiceImpl
+    private val aidvisorRepository: AidvisorRepository
 ) : ViewModel() {
 
     val chatCompletionsResponse =
@@ -22,7 +22,7 @@ class HomeViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            chatCompletionsResponse.value = aidvisorServiceImpl.getChatCompletions(
+            chatCompletionsResponse.value = aidvisorRepository.getChatCompletions(
                 ChatCompletionRequest(
                     model = "gpt-3.5-turbo",
                     messages = listOf(

@@ -1,10 +1,8 @@
-package com.filipmik.aidvisor.data.repository
+package com.filipmik.aidvisor.data.remote
 
 import com.filipmik.aidvisor.data.model.request.ChatCompletionRequest
 import com.filipmik.aidvisor.data.model.response.ChatCompletionsResponse
-import com.filipmik.aidvisor.data.remote.AidvisorService
 import com.filipmik.aidvisor.tools.ApiResult
-import com.filipmik.aidvisor.data.remote.AidvisorRoutes
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.post
