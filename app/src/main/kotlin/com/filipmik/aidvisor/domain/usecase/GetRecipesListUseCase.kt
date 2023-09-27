@@ -1,9 +1,11 @@
 package com.filipmik.aidvisor.domain.usecase
 
+import android.content.res.Resources
+import com.filipmik.aidvisor.R
 import com.filipmik.aidvisor.data.model.request.ChatCompletionRequest
 import com.filipmik.aidvisor.data.model.request.Message
 import com.filipmik.aidvisor.data.repository.AidvisorRepository
-import com.filipmik.aidvisor.domain.model.RecipeListItem
+import com.filipmik.aidvisor.domain.model.Recipe
 import com.filipmik.aidvisor.tools.ApiResult
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -11,6 +13,7 @@ import kotlinx.serialization.json.Json
 import javax.inject.Inject
 
 class GetRecipesListUseCase @Inject constructor(
+    private val resources: Resources,
     private val aidvisorRepository: AidvisorRepository
 ) {
 
@@ -19,7 +22,7 @@ class GetRecipesListUseCase @Inject constructor(
     fun init(ingredients: String) = apply {
         _ingredients = ingredients
     }
-    operator fun invoke() : Flow<ApiResult<List<RecipeListItem>>> = flow {
+    operator fun invoke() : Flow<ApiResult<List<Recipe>>> = flow {
         emit(ApiResult.Loading())
 
         try {
@@ -33,7 +36,7 @@ class GetRecipesListUseCase @Inject constructor(
                 )
             ).choices.first().message.content // The response from chatGpt
 
-            val recipeList: List<RecipeListItem> = Json.decodeFromString(body)
+            val recipeList: List<Recipe> = Json.decodeFromString(body)
 
             emit(ApiResult.Success(recipeList))
         } catch (e: Exception) {
@@ -41,9 +44,6 @@ class GetRecipesListUseCase @Inject constructor(
         }
     }
 
-    private fun getIngredientsQuery(ingredients: String): String {
-        return "Create me a JSON array response in this format: \"[{\"title\":\"Banana Pancakes\"}, ...]\"" +
-            "Without no other comments. Only the array. " +
-            "A list of recipes with these ingredients - $ingredients. With only the titles."
-    }
+    private fun getIngredientsQuery(ingredients: String): String =
+        resources.getString(R.string.gpt_query_recipes, ingredients)
 }
