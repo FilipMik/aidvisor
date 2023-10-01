@@ -44,6 +44,12 @@ class GetRecipesListUseCase @Inject constructor(
         }
     }
 
-    private fun getIngredientsQuery(ingredients: String): String =
-        resources.getString(R.string.gpt_query_recipes, ingredients)
+    private fun getIngredientsQuery(ingredients: String): String = if (ingredients.isEmpty()) {
+            resources.getString(
+                R.string.gpt_query_recipes,
+                resources.getString(R.string.gpt_query_any_recipes)
+            )
+        } else {
+            resources.getString(R.string.gpt_query_recipes, ingredients)
+        }
 }

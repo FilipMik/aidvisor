@@ -1,14 +1,19 @@
 package com.filipmik.aidvisor.ui.screens.home
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
@@ -68,7 +73,7 @@ object Home {
                     .fillMaxWidth()
             ) {
                 Spacer(modifier = Modifier.padding(20.dp))
-                IngredientsInput(ingredients, actions)
+                IngredientsInput(apiCompletionState, ingredients, actions)
             }
 
             if (recipes.isNotEmpty()) {
@@ -86,7 +91,11 @@ object Home {
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun IngredientsInput(ingredients: String, actions: Actions) {
+    fun IngredientsInput(
+        apiCompletionState: ScreenState,
+        ingredients: String,
+        actions: Actions
+    ) {
         Text(text = "What's in your fridge?")
 
         Spacer(modifier = Modifier.padding(4.dp))
@@ -100,10 +109,31 @@ object Home {
 
         Spacer(modifier = Modifier.padding(4.dp))
 
-        Button(onClick = {
-            actions.fetchRecipes()
-        }) {
-            Text(text = "Give me recipes!")
+        Row {
+            Spacer(modifier = Modifier.weight(2f))
+
+            Button(
+                modifier = Modifier.weight(5f),
+                contentPadding = PaddingValues(4.dp),
+                onClick = { actions.fetchRecipes() },
+                enabled = apiCompletionState != ScreenState.LOADING
+            ) {
+
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier.padding(4.dp)
+                ){
+                    if (apiCompletionState == ScreenState.LOADING) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(24.dp)
+                        )
+                    } else {
+                        Text(text = "Give me recipes!")
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.weight(2f))
         }
     }
 

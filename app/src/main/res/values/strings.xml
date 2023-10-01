@@ -4,4 +4,5 @@
         Without no other comments. Only the array. A list of recipes with these ingredients
         - %s. With only the titles and recipe difficulty named (\"difficulty\")
         - [easy, medium, hard]</string>
+    <string name="gpt_query_any_recipes">Any ingredients</string>
 </resources>
