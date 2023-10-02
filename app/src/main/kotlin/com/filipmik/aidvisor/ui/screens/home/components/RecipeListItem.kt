@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -27,16 +28,21 @@ fun RecipeListItem(
             .fillMaxWidth()
             .clickable { onItemClick(recipe) }
             .padding(16.dp, 12.dp, 16.dp, 12.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
+            modifier = Modifier.weight(7f),
             text = recipe.title,
             style = MaterialTheme.typography.bodyLarge,
             overflow = TextOverflow.Ellipsis,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Start
         )
 
         Text(
+            modifier = Modifier
+                .weight(2f)
+                .padding(start = 4.dp),
             text = recipe.difficulty.stringValue.replaceFirstChar {
                 it.uppercaseChar()
             },
@@ -51,7 +57,7 @@ fun RecipeListItem(
 @Preview
 @Composable
 fun RecipeListItemPreview(
-    recipe: Recipe = Recipe("Scrambled eggs", RecipeDifficulty.HARD),
+    recipe: Recipe = Recipe("Bacon, Egg and Cheese Breakfast Quesadilla", RecipeDifficulty.MEDIUM),
     onItemClick: (Recipe) -> Unit = {}
 ) {
     RecipeListItem(recipe = recipe, onItemClick = onItemClick)
