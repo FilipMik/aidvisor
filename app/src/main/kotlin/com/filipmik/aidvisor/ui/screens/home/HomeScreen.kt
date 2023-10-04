@@ -1,19 +1,14 @@
 package com.filipmik.aidvisor.ui.screens.home
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
@@ -25,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.filipmik.aidvisor.domain.model.Recipe
+import com.filipmik.aidvisor.ui.screens.home.components.LoadingButton
 import com.filipmik.aidvisor.ui.screens.home.components.RecipeListItem
 
 @Composable
@@ -53,6 +49,8 @@ object Home {
         fun setIngredients(ingredients: String)
 
         fun fetchRecipes()
+
+        fun saveRecipe(recipe: Recipe)
     }
 
     @Composable
@@ -83,7 +81,7 @@ object Home {
                         .weight(6f)
                         .fillMaxWidth()
                 ) {
-                    RecipesList(recipes)
+                    RecipesList(recipes, actions)
                 }
             }
         }
@@ -112,26 +110,12 @@ object Home {
         Row {
             Spacer(modifier = Modifier.weight(2f))
 
-            Button(
+            LoadingButton(
                 modifier = Modifier.weight(5f),
-                contentPadding = PaddingValues(4.dp),
-                onClick = { actions.fetchRecipes() },
-                enabled = apiCompletionState != ScreenState.LOADING
-            ) {
-
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier.padding(4.dp)
-                ){
-                    if (apiCompletionState == ScreenState.LOADING) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(24.dp)
-                        )
-                    } else {
-                        Text(text = "Give me recipes!")
-                    }
-                }
-            }
+                text = "Give me recipes!",
+                apiCompletionState = apiCompletionState,
+                onClick = { actions.fetchRecipes() }
+            )
 
             Spacer(modifier = Modifier.weight(2f))
         }
@@ -139,13 +123,16 @@ object Home {
 
     @Composable
     fun RecipesList(
-        recipes: List<Recipe>
+        recipes: List<Recipe>,
+        actions: Actions
     ) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
         ) {
             itemsIndexed(recipes) { index, recipe ->
-                RecipeListItem(recipe = recipe, onItemClick = {})
+                RecipeListItem(recipe = recipe, onItemClick = {
+
+                })
                 if (index < recipes.lastIndex) {
                     Divider(
                         modifier = Modifier.padding(start = 16.dp, end = 16.dp),

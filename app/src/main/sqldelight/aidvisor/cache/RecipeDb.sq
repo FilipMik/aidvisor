@@ -1,0 +1,13 @@
+CREATE TABLE recipeEntity (
+	name TEXT PRIMARY KEY NOT NULL,
+	difficulty TEXT NOT NULL
+);
+
+getAllRecipes:
+SELECT *
+FROM recipeEntity;
+
+insertRecipe:
+INSERT OR REPLACE
+INTO recipeEntity(name, difficulty)
+VALUES(?,?);

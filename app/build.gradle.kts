@@ -4,6 +4,7 @@ plugins {
     kotlin("kapt")
     id("dagger.hilt.android.plugin")
     id("kotlinx-serialization")
+    id("app.cash.sqldelight") version "2.0.0"
 }
 
 android {
@@ -61,6 +62,13 @@ android {
             "README.md",
         )
     }
+    sqldelight {
+        databases {
+            create("RecipeDatabase") {
+                packageName.set("com.filipmik.aidvisor")
+            }
+        }
+    }
 }
 
 dependencies {
@@ -99,6 +107,10 @@ dependencies {
     implementation("com.google.dagger:hilt-android:$hiltVersion")
     kapt("com.google.dagger:hilt-compiler:$hiltVersion")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+
+    // SQL Delight
+    implementation("app.cash.sqldelight:android-driver:2.0.0")
+    implementation("app.cash.sqldelight:coroutines-extensions:2.0.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

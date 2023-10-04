@@ -30,3 +30,11 @@ fun RecipeDifficulty.getColor(): Color {
         RecipeDifficulty.HARD -> DarkOrange
     }
 }
+
+fun String.toRecipeDifficulty(): RecipeDifficulty {
+    return when (this) {
+        "easy" -> RecipeDifficulty.EASY
+        "medium" -> RecipeDifficulty.MEDIUM
+        else -> RecipeDifficulty.HARD
+    }
+}
