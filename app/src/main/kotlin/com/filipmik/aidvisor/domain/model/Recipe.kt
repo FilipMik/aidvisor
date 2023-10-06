@@ -10,7 +10,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Recipe(
     val title: String,
-    val difficulty: RecipeDifficulty
+    val difficulty: RecipeDifficulty,
+    var isFavourite: Boolean = false
 )
 
 @Serializable

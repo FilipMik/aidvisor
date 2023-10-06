@@ -50,7 +50,7 @@ object Home {
 
         fun fetchRecipes()
 
-        fun saveRecipe(recipe: Recipe)
+        fun onFavClick(recipe: Recipe)
     }
 
     @Composable
@@ -130,9 +130,11 @@ object Home {
             modifier = Modifier.fillMaxSize(),
         ) {
             itemsIndexed(recipes) { index, recipe ->
-                RecipeListItem(recipe = recipe, onItemClick = {
-
-                })
+                RecipeListItem(
+                    recipe = recipe,
+                    onItemClick = {  },
+                    onSaveClick = { actions.onFavClick(recipe) }
+                )
                 if (index < recipes.lastIndex) {
                     Divider(
                         modifier = Modifier.padding(start = 16.dp, end = 16.dp),

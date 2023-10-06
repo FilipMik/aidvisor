@@ -11,3 +11,7 @@ insertRecipe:
 INSERT OR REPLACE
 INTO recipeEntity(name, difficulty)
 VALUES(?,?);
+
+deleteRecipeByName:
+DELETE FROM recipeEntity
+WHERE name = :name;

@@ -31,4 +31,8 @@ class RecipeDataSourceImpl constructor(
             recipe.difficulty.stringValue
         )
     }
+
+    override suspend fun deleteRecipeByName(recipeName: String) {
+        recipeDbQueries.deleteRecipeByName(recipeName)
+    }
 }

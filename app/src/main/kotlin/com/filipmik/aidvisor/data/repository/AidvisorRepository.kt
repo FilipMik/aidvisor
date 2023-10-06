@@ -26,4 +26,6 @@ class AidvisorRepository @Inject constructor(
     fun getSavedRecipes() : Flow<List<Recipe>> = recipeDataSourceImpl.getAllRecipes()
 
     suspend fun saveRecipe(recipe: Recipe) = recipeDataSourceImpl.insertRecipe(recipe)
+
+    suspend fun deleteRecipeByName(recipeName: String) = recipeDataSourceImpl.deleteRecipeByName(recipeName)
 }

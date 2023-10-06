@@ -3,6 +3,7 @@ package com.filipmik.aidvisor.ui.screens.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.filipmik.aidvisor.domain.model.Recipe
+import com.filipmik.aidvisor.domain.usecase.DeleteSavedRecipeUseCase
 import com.filipmik.aidvisor.domain.usecase.GetRecipesListUseCase
 import com.filipmik.aidvisor.domain.usecase.GetSavedRecipesListUseCase
 import com.filipmik.aidvisor.domain.usecase.SaveRecipeUseCase
@@ -10,8 +11,6 @@ import com.filipmik.aidvisor.tools.ApiResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -19,40 +18,54 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val getRecipesListUseCase: GetRecipesListUseCase,
     private val saveRecipeUseCase: SaveRecipeUseCase,
-    private val getSavedRecipesListUseCase: GetSavedRecipesListUseCase
+    private val getSavedRecipesListUseCase: GetSavedRecipesListUseCase,
+    private val deleteSavedRecipeUseCase: DeleteSavedRecipeUseCase
 ) : ViewModel(), Home.Actions {
 
     private val _homeState = HomeState()
     val homeState: HomeState = _homeState
 
     override fun fetchRecipes() {
-        with(_homeState) {
-            getRecipesListUseCase.init(ingredients).invoke()
-                .flowOn(Dispatchers.IO)
-                .onEach {
-                    when (it) {
-                        is ApiResult.Error -> {
-                            apiCompletionState = ScreenState.ERROR
-                            error = it.message ?: "Unknown error"
-                        }
-                        is ApiResult.Loading -> {
-                            apiCompletionState = ScreenState.LOADING
-                        }
-                        is ApiResult.Success -> {
-                            apiCompletionState = ScreenState.CONTENT
-                            recipes = it.data ?: listOf()
+        viewModelScope.launch {
+            with(_homeState) {
+                getRecipesListUseCase.init(ingredients).invoke()
+                    .flowOn(Dispatchers.IO)
+                    .collect {
+                        when (it) {
+                            is ApiResult.Error -> {
+                                apiCompletionState = ScreenState.ERROR
+                                error = it.message ?: "Unknown error"
+                            }
+                            is ApiResult.Loading -> {
+                                apiCompletionState = ScreenState.LOADING
+                            }
+                            is ApiResult.Success -> {
+                                apiCompletionState = ScreenState.CONTENT
+                                recipes = it.data ?: listOf()
+                            }
                         }
                     }
-                }.launchIn(viewModelScope)
+            }
         }
     }
 
-    override fun saveRecipe(recipe: Recipe) {
+    override fun onFavClick(recipe: Recipe) {
         viewModelScope.launch(Dispatchers.IO) {
-            try {
-                saveRecipeUseCase.init(recipe).invoke()
-            } catch (error: Throwable) {
-                _homeState.error = error.localizedMessage
+            when (recipe.isFavourite) {
+                true -> {
+                    try {
+                        deleteSavedRecipeUseCase.init(recipe).invoke()
+                    } catch (error: Throwable) {
+                        _homeState.error = error.localizedMessage
+                    }
+                }
+                false -> {
+                    try {
+                        saveRecipeUseCase.init(recipe).invoke()
+                    } catch (error: Throwable) {
+                        _homeState.error = error.localizedMessage
+                    }
+                }
             }
         }
     }

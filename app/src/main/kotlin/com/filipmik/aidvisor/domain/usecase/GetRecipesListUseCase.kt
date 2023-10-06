@@ -8,7 +8,10 @@ import com.filipmik.aidvisor.data.repository.AidvisorRepository
 import com.filipmik.aidvisor.domain.model.Recipe
 import com.filipmik.aidvisor.tools.ApiResult
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combineTransform
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onStart
 import kotlinx.serialization.json.Json
 import javax.inject.Inject
 
@@ -22,10 +25,22 @@ class GetRecipesListUseCase @Inject constructor(
     fun init(ingredients: String) = apply {
         _ingredients = ingredients
     }
-    operator fun invoke() : Flow<ApiResult<List<Recipe>>> = flow {
-        emit(ApiResult.Loading())
 
-        try {
+    operator fun invoke() : Flow<ApiResult<List<Recipe>>> =
+        fetchRecipeList()
+            .combineTransform<List<Recipe>, List<Recipe>, ApiResult<List<Recipe>>>(
+                aidvisorRepository.getSavedRecipes()
+            ) { queriedRecipes, savedRecipes ->
+                val recipes = queriedRecipes.map { queryRecipe ->
+                    queryRecipe.copy(isFavourite = savedRecipes.any { savedRecipe ->
+                        queryRecipe.title == savedRecipe.title
+                    })
+                }
+                emit(ApiResult.Success(recipes))
+            }.onStart { emit(ApiResult.Loading()) }
+            .catch { emit(ApiResult.Error(it.localizedMessage ?: "Unknown error")) }
+
+    private fun fetchRecipeList() : Flow<List<Recipe>> = flow {
             val body = aidvisorRepository.getRecipesResponse(
                 ChatCompletionRequest(
                     model = "gpt-3.5-turbo",
@@ -38,10 +53,7 @@ class GetRecipesListUseCase @Inject constructor(
 
             val recipeList: List<Recipe> = Json.decodeFromString(body)
 
-            emit(ApiResult.Success(recipeList))
-        } catch (e: Exception) {
-            emit(ApiResult.Error(e.localizedMessage ?: "Unknown error"))
-        }
+            emit(recipeList)
     }
 
     private fun getIngredientsQuery(ingredients: String): String = if (ingredients.isEmpty()) {

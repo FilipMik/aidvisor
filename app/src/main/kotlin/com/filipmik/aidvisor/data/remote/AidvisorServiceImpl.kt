@@ -13,6 +13,7 @@ import javax.inject.Inject
 class AidvisorServiceImpl @Inject constructor(
     private val httpClient: HttpClient
 ) : AidvisorService {
+
     override suspend fun getChatCompletions(
         chatCompletionRequest: ChatCompletionRequest
     ): ChatCompletionsResponse =

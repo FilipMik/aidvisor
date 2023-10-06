@@ -8,4 +8,6 @@ interface RecipeDataSource {
     fun getAllRecipes() : Flow<List<Recipe>>
 
     suspend fun insertRecipe(recipe: Recipe)
+
+    suspend fun deleteRecipeByName(recipeName: String)
 }
