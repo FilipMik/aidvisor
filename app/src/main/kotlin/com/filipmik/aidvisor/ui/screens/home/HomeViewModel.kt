@@ -18,7 +18,6 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val getRecipesListUseCase: GetRecipesListUseCase,
     private val saveRecipeUseCase: SaveRecipeUseCase,
-    private val getSavedRecipesListUseCase: GetSavedRecipesListUseCase,
     private val deleteSavedRecipeUseCase: DeleteSavedRecipeUseCase
 ) : ViewModel(), Home.Actions {
 
