@@ -4,5 +4,5 @@ sealed class Destination(
     val route: String,
 ) {
     object Home : Destination(route = "home_screen")
-    object Detail : Destination(route = "detail_screen")
+    object Favourites : Destination(route = "favourites_screen")
 }

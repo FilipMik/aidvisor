@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.filipmik.aidvisor.domain.model.Recipe
 import com.filipmik.aidvisor.domain.usecase.DeleteSavedRecipeUseCase
 import com.filipmik.aidvisor.domain.usecase.GetRecipesListUseCase
-import com.filipmik.aidvisor.domain.usecase.GetSavedRecipesListUseCase
 import com.filipmik.aidvisor.domain.usecase.SaveRecipeUseCase
 import com.filipmik.aidvisor.tools.ApiResult
 import dagger.hilt.android.lifecycle.HiltViewModel

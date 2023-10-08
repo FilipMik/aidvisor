@@ -1,4 +1,4 @@
-package com.filipmik.aidvisor.ui.screens.detail
+package com.filipmik.aidvisor.ui.screens.favourites
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,7 +10,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 
 @Composable
-fun DetailScreen(
+fun FavouritesScreen(
     navController: NavController
 ) {
 
@@ -19,6 +19,6 @@ fun DetailScreen(
             .fillMaxWidth()
             .padding(40.dp)
     ) {
-        Text(text = "DetailScreen")
+        Text(text = "FavouritesScreen")
     }
 }

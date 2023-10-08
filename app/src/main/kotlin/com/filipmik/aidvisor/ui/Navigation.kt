@@ -6,12 +6,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.filipmik.aidvisor.navigation.Destination
-import com.filipmik.aidvisor.ui.screens.detail.DetailScreen
+import com.filipmik.aidvisor.ui.screens.favourites.FavouritesScreen
 import com.filipmik.aidvisor.ui.screens.home.HomeScreen
 
 @Composable
 fun Navigation(
-    navController: NavHostController = rememberNavController()) {
+    navController: NavHostController = rememberNavController()
+) {
     NavHost(
         navController = navController,
         startDestination = Destination.Home.route,
@@ -21,8 +22,8 @@ fun Navigation(
             HomeScreen(navController)
         }
 
-        composable(Destination.Detail.route) {
-            DetailScreen(navController)
+        composable(Destination.Favourites.route) {
+            FavouritesScreen(navController)
         }
     }
 }
