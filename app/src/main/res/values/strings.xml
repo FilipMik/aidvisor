@@ -1,8 +1,3 @@
 <resources>
     <string name="app_name">aidvisor</string>
-    <string name="gpt_query_recipes">Create me a JSON array response in this format: \"[{\"title\":\"Banana pancake\"}, …]\"
-        Without no other comments. Only the array. A list of recipes with these ingredients
-        - %s. With only the titles and recipe difficulty named (\"difficulty\")
-        - [easy, medium, hard]</string>
-    <string name="gpt_query_any_recipes">Any ingredients</string>
 </resources>
