@@ -11,4 +11,6 @@ class FavouritesState {
 
     var recipes: List<Recipe> by mutableStateOf(listOf())
 
+    var error: String by mutableStateOf("")
+
 }

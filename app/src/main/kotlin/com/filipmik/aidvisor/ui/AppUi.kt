@@ -1,11 +1,14 @@
 package com.filipmik.aidvisor.ui
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.filipmik.aidvisor.ui.components.BottomNavigationBar
 import com.filipmik.aidvisor.ui.theme.AidvisorTheme
@@ -21,7 +24,9 @@ fun AppUi() {
             Scaffold(
                 bottomBar = { BottomNavigationBar(navController) },
             ) {
-                Navigation(navController = navController)
+                Box(modifier = Modifier.padding(it)) {
+                    Navigation(navController = navController)
+                }
             }
         }
     }

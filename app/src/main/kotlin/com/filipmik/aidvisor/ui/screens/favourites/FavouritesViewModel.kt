@@ -3,6 +3,7 @@ package com.filipmik.aidvisor.ui.screens.favourites
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.filipmik.aidvisor.domain.model.Recipe
+import com.filipmik.aidvisor.domain.usecase.DeleteSavedRecipeUseCase
 import com.filipmik.aidvisor.domain.usecase.GetSavedRecipesListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -12,7 +13,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FavouritesViewModel @Inject constructor(
-    private val getSavedRecipesListUseCase: GetSavedRecipesListUseCase
+    private val getSavedRecipesListUseCase: GetSavedRecipesListUseCase,
+    private val deleteSavedRecipeUseCase: DeleteSavedRecipeUseCase
 ) : ViewModel(), Favourites.Actions {
 
     private val _favouritesState = FavouritesState()
@@ -30,5 +32,15 @@ class FavouritesViewModel @Inject constructor(
 
     override fun navigateToRecipeDetail(recipe: Recipe) {
         //TODO("Not yet implemented")
+    }
+
+    override fun unfavouriteRecipe(recipe: Recipe) {
+        viewModelScope.launch {
+            try {
+                deleteSavedRecipeUseCase.init(recipe).invoke()
+            } catch (error: Throwable) {
+                _favouritesState.error = error.localizedMessage ?: "Unknown error"
+            }
+        }
     }
 }
