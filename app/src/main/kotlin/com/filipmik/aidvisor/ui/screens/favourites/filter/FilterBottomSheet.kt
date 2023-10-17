@@ -26,7 +26,13 @@ fun FilterBottomSheet(
 object BottomSheet {
 
     interface Actions {
-        fun onSortAtoZ()
+        fun onSortAtoZ(orderByNameAsc: Boolean)
+
+        fun onSortZtoA(orderByNameAsc: Boolean)
+
+        fun onSortEasyToHard(orderByDifficultyAsc: Boolean)
+
+        fun onSortHardToEasy(orderByDifficultyAsc: Boolean)
 
         fun onEasy(isEasySelected: Boolean)
 
@@ -63,23 +69,45 @@ object BottomSheet {
         with(recipeFilter) {
             Column {
                 FlowRow(modifier = Modifier.padding(start = 8.dp, top = 8.dp, end = 8.dp)) {
-                    FilterItem(selected = false, onClick = { /*TODO*/ }, label = "Sort: A-Z")
-                    FilterItem(selected = false, onClick = { /*TODO*/ }, label = "Sort: Z-A")
+                    FilterItem(
+                        selected = orderByNameAsc == true,
+                        onClick = { actions.onSortAtoZ(orderByNameAsc == true) },
+                        label = "Sort: A-Z"
+                    )
+                    FilterItem(
+                        selected = orderByNameAsc == false,
+                        onClick = { actions.onSortZtoA(orderByNameAsc == false) },
+                        label = "Sort: Z-A"
+                    )
 
-                    FilterItem(selected = false, onClick = { /*TODO*/ }, label = "Sort: Easy-Hard")
-                    FilterItem(selected = false, onClick = { /*TODO*/ }, label = "Sort: Hard-Easy")
+                    FilterItem(
+                        selected = orderByDifficultyAsc == true,
+                        onClick = { actions.onSortEasyToHard(orderByNameAsc == true) },
+                        label = "Sort: Easy-Hard"
+                    )
+                    FilterItem(
+                        selected = orderByDifficultyAsc == false,
+                        onClick = { actions.onSortHardToEasy(orderByDifficultyAsc == false) },
+                        label = "Sort: Hard-Easy"
+                    )
                 }
 
                 FlowRow(modifier = Modifier.padding(start = 8.dp, end = 8.dp, bottom = 8.dp)) {
-                    FilterItem(selected = showEasy, onClick = {
-                        actions.onEasy(showEasy)
-                    }, label = "Easy")
-                    FilterItem(selected = showMedium, onClick = {
-                        actions.onMedium(showMedium)
-                    }, label = "Medium")
-                    FilterItem(selected = showHard, onClick = {
-                        actions.onHard(showHard)
-                    }, label = "Hard")
+                    FilterItem(
+                        selected = showEasy,
+                        onClick = { actions.onEasy(showEasy) },
+                        label = "Easy"
+                    )
+                    FilterItem(
+                        selected = showMedium,
+                        onClick = { actions.onMedium(showMedium) },
+                        label = "Medium"
+                    )
+                    FilterItem(
+                        selected = showHard,
+                        onClick = { actions.onHard(showHard) },
+                        label = "Hard"
+                    )
                 }
             }
         }
