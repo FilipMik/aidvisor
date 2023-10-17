@@ -20,7 +20,7 @@ class HomeViewModel @Inject constructor(
     private val deleteSavedRecipeUseCase: DeleteSavedRecipeUseCase
 ) : ViewModel(), Home.Actions {
 
-    private val _homeState = HomeState()
+    private var _homeState = HomeState()
     val homeState: HomeState = _homeState
 
     override fun fetchRecipes() {

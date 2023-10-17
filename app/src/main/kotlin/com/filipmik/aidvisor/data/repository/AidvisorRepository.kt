@@ -1,6 +1,7 @@
 package com.filipmik.aidvisor.data.repository
 
 import com.filipmik.aidvisor.data.database.RecipeDataSourceImpl
+import com.filipmik.aidvisor.data.model.database.RecipeFilterDb
 import com.filipmik.aidvisor.data.model.request.ChatCompletionRequest
 import com.filipmik.aidvisor.data.model.response.ChatCompletionsResponse
 import com.filipmik.aidvisor.data.remote.AidvisorServiceImpl
@@ -24,6 +25,9 @@ class AidvisorRepository @Inject constructor(
     // Local data storage
 
     fun getSavedRecipes() : Flow<List<Recipe>> = recipeDataSourceImpl.getAllRecipes()
+
+    fun getFilteredRecipes(recipeFilter: RecipeFilterDb): Flow<List<Recipe>> =
+        recipeDataSourceImpl.getAllRecipesFilter(recipeFilter)
 
     suspend fun saveRecipe(recipe: Recipe) = recipeDataSourceImpl.insertRecipe(recipe)
 

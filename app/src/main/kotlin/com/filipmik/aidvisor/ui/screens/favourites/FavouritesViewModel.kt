@@ -4,7 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.filipmik.aidvisor.domain.model.Recipe
 import com.filipmik.aidvisor.domain.usecase.DeleteSavedRecipeUseCase
-import com.filipmik.aidvisor.domain.usecase.GetSavedRecipesListUseCase
+import com.filipmik.aidvisor.domain.usecase.GetFilteredRecipesUseCase
+import com.filipmik.aidvisor.ui.screens.favourites.filter.BottomSheet
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOn
@@ -13,21 +14,19 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FavouritesViewModel @Inject constructor(
-    private val getSavedRecipesListUseCase: GetSavedRecipesListUseCase,
+    private val getFilteredRecipesUseCase: GetFilteredRecipesUseCase,
     private val deleteSavedRecipeUseCase: DeleteSavedRecipeUseCase
-) : ViewModel(), Favourites.Actions {
+) : ViewModel(), Favourites.Actions, BottomSheet.Actions {
 
-    private val _favouritesState = FavouritesState()
+    private var _favouritesState = FavouritesState()
     val favouritesState = _favouritesState
 
     init {
-        viewModelScope.launch {
-            getSavedRecipesListUseCase.invoke()
-                .flowOn(Dispatchers.IO)
-                .collect {
-                _favouritesState.recipes = it
-            }
-        }
+        onFilterChanged()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
     }
 
     override fun navigateToRecipeDetail(recipe: Recipe) {
@@ -41,6 +40,35 @@ class FavouritesViewModel @Inject constructor(
             } catch (error: Throwable) {
                 _favouritesState.error = error.localizedMessage ?: "Unknown error"
             }
+        }
+    }
+
+    override fun onSortAtoZ() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onEasy(isEasySelected: Boolean) = with(favouritesState) {
+        recipeFilter = recipeFilter.copy(showEasy = isEasySelected.not())
+        onFilterChanged()
+    }
+
+    override fun onMedium(isMediumSelected: Boolean) = with(favouritesState) {
+        recipeFilter = recipeFilter.copy(showMedium = isMediumSelected.not())
+        onFilterChanged()
+    }
+
+    override fun onHard(isHardSelected: Boolean) = with(favouritesState) {
+        recipeFilter = recipeFilter.copy(showHard = isHardSelected.not())
+        onFilterChanged()
+    }
+
+    private fun onFilterChanged() {
+        viewModelScope.launch {
+            getFilteredRecipesUseCase.init(favouritesState.recipeFilter).invoke()
+                .flowOn(Dispatchers.IO)
+                .collect {
+                    favouritesState.recipes = it
+                }
         }
     }
 }

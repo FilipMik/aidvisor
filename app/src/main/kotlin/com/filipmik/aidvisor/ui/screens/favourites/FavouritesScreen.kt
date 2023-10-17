@@ -14,21 +14,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.filipmik.aidvisor.domain.model.Recipe
+import com.filipmik.aidvisor.navigation.Destination
 import com.filipmik.aidvisor.ui.screens.home.components.RecipeListItem
 
 @Composable
 fun FavouritesScreen(
     navController: NavController,
-    viewModel: FavouritesViewModel = hiltViewModel()
+    viewModel: FavouritesViewModel
 ) {
 
     with(viewModel.favouritesState) {
         Favourites.Content(
+            navController = navController,
             actions = viewModel,
-            favRecipes = recipes)
+            favRecipes = recipes
+        )
     }
 }
 
@@ -42,6 +44,7 @@ object Favourites {
 
     @Composable
     fun Content(
+        navController: NavController,
         actions: Actions,
         favRecipes: List<Recipe>
     ) {
@@ -71,7 +74,7 @@ object Favourites {
                     .padding(16.dp)
                     .align(Alignment.BottomEnd),
                 onClick = {
-                    
+                    navController.navigate(Destination.FavouritesFilter.route)
                 }
             ) {
                 Icon(imageVector = Icons.Filled.Settings, contentDescription = "FAB")
