@@ -13,7 +13,7 @@ class GetFilteredRecipesUseCase @Inject constructor(
     private val aidvisorRepository: AidvisorRepository
 ) {
 
-    private var _filter: RecipeFilter = RecipeFilter.DEFAULT
+    private var _filter: RecipeFilter = RecipeFilter()
 
     fun init(filter: RecipeFilter) = this.apply {
         _filter = filter

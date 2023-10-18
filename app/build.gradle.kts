@@ -102,6 +102,9 @@ dependencies {
     implementation("io.ktor:ktor-client-serialization:$ktorVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
 
+    // Data store
+    implementation("androidx.datastore:datastore-android:1.1.0-alpha05")
+
     // Timber
     implementation("com.jakewharton.timber:timber:5.0.1")
 

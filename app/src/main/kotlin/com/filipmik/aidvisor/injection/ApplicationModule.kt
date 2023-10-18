@@ -24,7 +24,7 @@ class ApplicationModule {
 
     @Provides
     @Singleton
-    fun providesSqlDriver(
+    fun provideSqlDriver(
         @ApplicationContext context: Context
     ): SqlDriver = AndroidSqliteDriver(
         schema = RecipeDatabase.Schema,
@@ -34,7 +34,7 @@ class ApplicationModule {
 
     @Provides
     @Singleton
-    fun providesRecipeDataSource(
+    fun provideRecipeDataSource(
         sqlDriver: SqlDriver
     ) : RecipeDataSourceImpl = RecipeDataSourceImpl(RecipeDatabase(sqlDriver))
 }

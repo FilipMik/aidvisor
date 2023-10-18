@@ -29,7 +29,7 @@ class NetworkModule {
 
     @Provides
     @Singleton
-    fun providesHttpClient() : HttpClient {
+    fun provideHttpClient() : HttpClient {
         return HttpClient(Android) {
             install(Logging) {
                 logger = object: Logger {

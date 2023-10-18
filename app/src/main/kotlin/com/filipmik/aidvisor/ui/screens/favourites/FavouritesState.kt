@@ -12,7 +12,7 @@ class FavouritesState {
 
     var recipes: List<Recipe> by mutableStateOf(listOf())
 
-    var recipeFilter: RecipeFilter by mutableStateOf(RecipeFilter.DEFAULT)
+    var recipeFilter: RecipeFilter by mutableStateOf(RecipeFilter())
 
     var error: String by mutableStateOf("")
 
