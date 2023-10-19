@@ -3,8 +3,10 @@ package com.filipmik.aidvisor.ui.screens.favourites
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.filipmik.aidvisor.domain.model.Recipe
+import com.filipmik.aidvisor.domain.model.RecipeFilter
 import com.filipmik.aidvisor.domain.usecase.DeleteSavedRecipeUseCase
-import com.filipmik.aidvisor.domain.usecase.GetFilteredRecipesUseCase
+import com.filipmik.aidvisor.domain.usecase.filter.GetFilteredRecipesUseCase
+import com.filipmik.aidvisor.domain.usecase.filter.SetFilterUseCase
 import com.filipmik.aidvisor.ui.screens.favourites.filter.BottomSheet
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -15,18 +17,22 @@ import javax.inject.Inject
 @HiltViewModel
 class FavouritesViewModel @Inject constructor(
     private val getFilteredRecipesUseCase: GetFilteredRecipesUseCase,
-    private val deleteSavedRecipeUseCase: DeleteSavedRecipeUseCase
+    private val deleteSavedRecipeUseCase: DeleteSavedRecipeUseCase,
+    private val setFilterUseCase: SetFilterUseCase
 ) : ViewModel(), Favourites.Actions, BottomSheet.Actions {
 
     private var _favouritesState = FavouritesState()
     val favouritesState = _favouritesState
 
     init {
-        onFilterChanged()
-    }
-
-    override fun onCleared() {
-        super.onCleared()
+        viewModelScope.launch {
+            getFilteredRecipesUseCase.invoke()
+                .flowOn(Dispatchers.IO)
+                .collect {
+                    favouritesState.recipes = it.first
+                    favouritesState.recipeFilter = it.second
+                }
+        }
     }
 
     override fun navigateToRecipeDetail(recipe: Recipe) {
@@ -46,7 +52,7 @@ class FavouritesViewModel @Inject constructor(
     // Sorting by name
 
     override fun onSortAtoZ(orderByNameAsc: Boolean) = with(favouritesState) {
-        recipeFilter = when {
+        updateFilter( when {
             orderByNameAsc -> recipeFilter.copy(
                 orderByNameAsc = null,
                 orderByDifficultyAsc = null
@@ -55,12 +61,11 @@ class FavouritesViewModel @Inject constructor(
                 orderByNameAsc = true,
                 orderByDifficultyAsc = null
             )
-        }
-        onFilterChanged()
+        })
     }
 
     override fun onSortZtoA(orderByNameAsc: Boolean) = with(favouritesState) {
-        recipeFilter = when {
+        updateFilter( when {
             orderByNameAsc -> recipeFilter.copy(
                 orderByNameAsc = null,
                 orderByDifficultyAsc = null
@@ -69,14 +74,13 @@ class FavouritesViewModel @Inject constructor(
                 orderByNameAsc = false,
                 orderByDifficultyAsc = null
             )
-        }
-        onFilterChanged()
+        })
     }
 
     // Sorting by difficulty
 
     override fun onSortEasyToHard(orderByDifficultyAsc: Boolean) = with(favouritesState) {
-        recipeFilter = when {
+        updateFilter( when {
             orderByDifficultyAsc -> recipeFilter.copy(
                 orderByDifficultyAsc = null,
                 orderByNameAsc = null
@@ -85,12 +89,11 @@ class FavouritesViewModel @Inject constructor(
                 orderByDifficultyAsc = true,
                 orderByNameAsc = null
             )
-        }
-        onFilterChanged()
+        })
     }
 
     override fun onSortHardToEasy(orderByDifficultyAsc: Boolean) = with(favouritesState) {
-        recipeFilter = when {
+        updateFilter( when {
             orderByDifficultyAsc -> recipeFilter.copy(
                 orderByDifficultyAsc = null,
                 orderByNameAsc = null
@@ -99,45 +102,30 @@ class FavouritesViewModel @Inject constructor(
                 orderByDifficultyAsc = false,
                 orderByNameAsc = null
             )
-        }
-        onFilterChanged()
+        })
     }
 
     // Filtering difficulties
 
     override fun onEasy(isEasySelected: Boolean) = with(favouritesState) {
         if (recipeFilter.showMedium || recipeFilter.showHard) {
-            recipeFilter = recipeFilter.copy(showEasy = isEasySelected.not())
-            onFilterChanged()
+            updateFilter(recipeFilter = recipeFilter.copy(showEasy = isEasySelected.not()))
         }
     }
 
     override fun onMedium(isMediumSelected: Boolean) = with(favouritesState) {
         if (recipeFilter.showEasy || recipeFilter.showHard) {
-            recipeFilter = recipeFilter.copy(showMedium = isMediumSelected.not())
-            onFilterChanged()
+            updateFilter(recipeFilter.copy(showMedium = isMediumSelected.not()))
         }
     }
 
     override fun onHard(isHardSelected: Boolean) = with(favouritesState) {
         if (recipeFilter.showEasy || recipeFilter.showMedium) {
-            recipeFilter = recipeFilter.copy(showHard = isHardSelected.not())
-            onFilterChanged()
+            updateFilter(recipeFilter.copy(showHard = isHardSelected.not()))
         }
     }
 
-    private fun onFilterChanged() {
-        // TODO update filter to sharedPreferences
-
-        viewModelScope.launch {
-
-            // TODO GET filter from shared preference and pass it to getFilteredRecipesUseCase
-
-            getFilteredRecipesUseCase.init(favouritesState.recipeFilter).invoke()
-                .flowOn(Dispatchers.IO)
-                .collect {
-                    favouritesState.recipes = it
-                }
-        }
+    private fun updateFilter(recipeFilter: RecipeFilter) {
+        viewModelScope.launch { setFilterUseCase.init(recipeFilter).invoke() }
     }
 }
