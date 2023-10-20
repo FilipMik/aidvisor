@@ -7,7 +7,7 @@ import com.filipmik.aidvisor.domain.model.RecipeDifficulty
 import com.filipmik.aidvisor.domain.model.RecipeFilter
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -17,7 +17,7 @@ class GetFilteredRecipesUseCase @Inject constructor(
 ) {
 
     operator fun invoke(): Flow<Pair<List<Recipe>, RecipeFilter>> {
-        return aidvisorRepository.getRecipeFilter().flatMapConcat { filter ->
+        return aidvisorRepository.getRecipeFilter().flatMapLatest { filter ->
             val difficultiesList = mutableListOf<String>()
 
             with(difficultiesList) {
