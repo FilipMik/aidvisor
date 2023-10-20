@@ -19,9 +19,10 @@ class DataStoreModule {
 
     @Provides
     fun provideRecipeFilterDataStore(
-        @ApplicationContext context: Context
+        @ApplicationContext context: Context,
+        recipeFilterSerializer: RecipeFilterSerializer
     ): DataStore<RecipeFilter> = DataStoreFactory.create(
-        serializer = RecipeFilterSerializer,
+        serializer = recipeFilterSerializer,
         produceFile = {
             context.dataStoreFile(Constants.RecipeDataStore.RECIPE_DATA_STORE_FILE_NAME)
         }

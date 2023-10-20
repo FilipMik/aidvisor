@@ -28,10 +28,14 @@ class AidvisorRepository @Inject constructor(
     // Proto dataStore
 
     suspend fun setRecipeFilter(recipeFilter: RecipeFilter) {
-        recipeFilterDataStore.updateData { recipeFilter }
+        recipeFilterDataStore.updateData {
+            recipeFilter
+        }
     }
 
-    fun getRecipeFilter(): Flow<RecipeFilter> = recipeFilterDataStore.data
+    fun getRecipeFilter(): Flow<RecipeFilter> {
+        return recipeFilterDataStore.data
+    }
 
     // Local data storage
 
