@@ -11,6 +11,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.serialization.json.Json
 import javax.inject.Singleton
 
 @Module
@@ -24,7 +25,7 @@ class ApplicationModule {
 
     @Provides
     @Singleton
-    fun providesSqlDriver(
+    fun provideSqlDriver(
         @ApplicationContext context: Context
     ): SqlDriver = AndroidSqliteDriver(
         schema = RecipeDatabase.Schema,
@@ -34,7 +35,15 @@ class ApplicationModule {
 
     @Provides
     @Singleton
-    fun providesRecipeDataSource(
+    fun provideRecipeDataSource(
         sqlDriver: SqlDriver
     ) : RecipeDataSourceImpl = RecipeDataSourceImpl(RecipeDatabase(sqlDriver))
+
+    @Provides
+    fun provideJson(): Json = Json {
+        isLenient = true
+        prettyPrint = true
+        ignoreUnknownKeys = true
+        encodeDefaults = true
+    }
 }

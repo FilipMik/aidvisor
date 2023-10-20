@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class GetSavedRecipesListUseCase @Inject constructor(
+class GetSavedRecipesUseCase @Inject constructor(
     private val aidvisorRepository: AidvisorRepository
 ) {
 

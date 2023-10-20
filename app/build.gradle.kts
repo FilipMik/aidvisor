@@ -84,6 +84,9 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
 
+    // Accompanist
+    implementation("com.google.accompanist:accompanist-navigation-material:0.33.2-alpha")
+
     // Navigation
     implementation("androidx.navigation:navigation-compose:2.7.2")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
@@ -98,6 +101,9 @@ dependencies {
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
     implementation("io.ktor:ktor-client-serialization:$ktorVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
+
+    // Data store
+    implementation("androidx.datastore:datastore-android:1.1.0-alpha05")
 
     // Timber
     implementation("com.jakewharton.timber:timber:5.0.1")

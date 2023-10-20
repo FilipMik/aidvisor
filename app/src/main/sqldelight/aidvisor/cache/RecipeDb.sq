@@ -3,9 +3,29 @@ CREATE TABLE recipeEntity (
 	difficulty TEXT NOT NULL
 );
 
+CREATE INDEX recipeFullName ON recipeEntity(name);
+
 getAllRecipes:
 SELECT *
 FROM recipeEntity;
+
+getAllRecipesFilter:
+SELECT *
+FROM recipeEntity
+WHERE difficulty IN :difficultyList
+ORDER BY
+	CASE WHEN :nameAsc THEN name END ASC,
+	CASE WHEN :nameAsc = 0 THEN name END DESC,
+	CASE WHEN :nameAsc IS NULL THEN
+		CASE
+			WHEN :difficultyAsc IS NULL THEN NULL
+			WHEN difficulty = 'easy' THEN
+				CASE WHEN :difficultyAsc THEN 1 ELSE 3 END
+			WHEN difficulty = 'medium' THEN 2
+			WHEN difficulty = 'hard' THEN
+				CASE WHEN :difficultyAsc THEN 3 ELSE 1 END
+		END
+END;
 
 insertRecipe:
 INSERT OR REPLACE

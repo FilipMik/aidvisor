@@ -1,5 +1,6 @@
 package com.filipmik.aidvisor.domain.model
 
+import aidvisor.cache.RecipeEntity
 import androidx.compose.ui.graphics.Color
 import com.filipmik.aidvisor.ui.theme.Yellow
 import com.filipmik.aidvisor.ui.theme.Green
@@ -38,4 +39,12 @@ fun String.toRecipeDifficulty(): RecipeDifficulty {
         "medium" -> RecipeDifficulty.MEDIUM
         else -> RecipeDifficulty.HARD
     }
+}
+
+fun RecipeEntity.toRecipe() : Recipe = run {
+    Recipe(this.name, this.difficulty.toRecipeDifficulty())
+}
+
+fun List<RecipeEntity>.toRecipeList() : List<Recipe> = run {
+    this.map { it.toRecipe() }
 }

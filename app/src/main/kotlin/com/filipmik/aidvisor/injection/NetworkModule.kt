@@ -29,7 +29,9 @@ class NetworkModule {
 
     @Provides
     @Singleton
-    fun providesHttpClient() : HttpClient {
+    fun provideHttpClient(
+        json: Json
+    ) : HttpClient {
         return HttpClient(Android) {
             install(Logging) {
                 logger = object: Logger {
@@ -47,11 +49,7 @@ class NetworkModule {
             }
 
             install(ContentNegotiation) {
-                json(Json {
-                    isLenient = true
-                    prettyPrint = true
-                    ignoreUnknownKeys = true
-                })
+                json(json)
             }
 
             install(ResponseObserver) {
